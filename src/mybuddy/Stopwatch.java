@@ -171,6 +171,7 @@ public class Stopwatch {
 				startBtn.setEnabled(true);
 				startTime-=System.currentTimeMillis();
 				double res=(startTime*-1)/sec;
+				if(res>1000)res/=10;
 				milisec.setText(res+"");
 				
 			}

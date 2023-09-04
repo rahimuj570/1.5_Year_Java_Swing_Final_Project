@@ -93,25 +93,34 @@ public class Login {
 		JButton btnNewButton = new JButton("Sign in");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(email.getText());
-				System.out.println(password.getText());
-				LocalDb ldb=new LocalDb();
-				List<Users>allUser=new ArrayList<Users>();
-				try {
-					allUser=ldb.getAllUser();
-				} catch (ClassNotFoundException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				for(var u:allUser) {
-					if(u.getEmail().equals(email.getText()) && u.getPassword().equals(password.getText())) {
-						CurrentUser me=new CurrentUser(u.getName(), u.getEmail(), u.getPassword());
-						break;
-					}else {
-						System.out.println("NOOoo");
+				if(email.getText().length()==0 || password.getText().length()==0) {
+					JOptionPane.showMessageDialog( frame, "Empty Field is Not Allowed","Invalid Email or Password", JOptionPane.WARNING_MESSAGE, null);
+				}else {
+					LocalDb ldb=new LocalDb();
+					List<Users>allUser=new ArrayList<Users>();
+					try {
+						allUser=ldb.getAllUser();
+					} catch (ClassNotFoundException | IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+					boolean foundME=false;
+					for(var u:allUser) {
+						if(u.getEmail().equals(email.getText()) && u.getPassword().equals(password.getText())) {
+							CurrentUser me=new CurrentUser(u.getName(), u.getEmail(), u.getPassword());
+							Dashboard window = new Dashboard();
+							window.frame.setVisible(true);
+							frame.dispose();
+							foundME=true;
+							break;
+						}else {
+							
+						}
+					}
+					if(!foundME)JOptionPane.showMessageDialog( frame, "User don't exist!","Invalid Email or Password", JOptionPane.WARNING_MESSAGE, null);
+				
 				}
-			}
+				}
 		});
 		btnNewButton.setVerticalAlignment(SwingConstants.BOTTOM);
 		btnNewButton.setFont(new Font("Sylfaen", Font.PLAIN, 16));

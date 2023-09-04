@@ -93,6 +93,13 @@ public class Dashboard {
 		panel.add(btnCounterMaster);
 		
 		JButton btnNotepad = new JButton("Todo-list");
+		btnNotepad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TodoUI window = new TodoUI();
+				window.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
 		btnNotepad.setBounds(10, 153, 145, 60);
 		panel.add(btnNotepad);
 	}

@@ -24,10 +24,11 @@ import java.util.*;
 
 public class TodoUI {
 	DefaultTableModel model;
-	private JFrame frame;
+	JFrame frame;
 	private JTable table;
 	private JTextField titlef;
 	private JTextField descf;
+	boolean cnfrm=false;
 
 	/**
 	 * Launch the application.
@@ -63,6 +64,13 @@ public class TodoUI {
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnNewButton = new JButton("Back to Dashboard");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Dashboard window = new Dashboard();
+				window.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
 		btnNewButton.setBackground(Color.PINK);
 		btnNewButton.setBounds(18, 18, 149, 32);
 		frame.getContentPane().add(btnNewButton);
@@ -121,7 +129,7 @@ public class TodoUI {
 				String stringDate = DateFor.format(date);
 				Todo todo=new Todo(titlef.getText(),descf.getText(),stringDate);
 				if(todo.getTitle().length()==0 || todo.getDesc().length()==0) {
-					JOptionPane.showMessageDialog( btnNewButton_1, "Empty field is not allowed","Invalid", JOptionPane.WARNING_MESSAGE, null);
+					JOptionPane.showMessageDialog( frame, "Empty field is not allowed","Invalid", JOptionPane.WARNING_MESSAGE, null);
 				}else {
 					try {
 						LocalDb localDb=new LocalDb(todo);
@@ -134,6 +142,9 @@ public class TodoUI {
 					row[1]=todo.getDesc();
 					row[2]=todo.getDate();
 					model.addRow(row);
+					JOptionPane.showMessageDialog( frame, "Successully Added!","Done", JOptionPane.INFORMATION_MESSAGE, null);
+					titlef.setText("");
+					descf.setText("");
 				}
 			}
 		});
@@ -145,26 +156,34 @@ public class TodoUI {
 		btnNewButton_2.addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
-				List<Todo>tdo=new ArrayList<Todo>();
 				int rmv =table.getSelectedRow();
-				model.removeRow(rmv);
-				   for (int i = 0; i < table.getRowCount(); i++) {  // Loop through the rows
-					   Todo ent=new Todo();
-					   for (int j = 0; j < table.getColumnCount(); j++) {
-						  String s=model.getValueAt(i, j).toString();
-						  row[j]=s;
-					   }
-					   ent.setTitle(row[0].toString());
-					   ent.setDesc(row[1].toString());
-					   ent.setDate(row[2].toString());
-					   tdo.add(ent);
-				     }
-				   try {
-					LocalDb aftrDlt=new LocalDb(tdo);
-				} catch (ClassNotFoundException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if(table.isRowSelected(rmv)) {
+					List<Todo>tdo=new ArrayList<Todo>();
+					model.removeRow(rmv);
+					   for (int i = 0; i < table.getRowCount(); i++) {  // Loop through the rows
+						   Todo ent=new Todo();
+						   for (int j = 0; j < table.getColumnCount(); j++) {
+							  String s=model.getValueAt(i, j).toString();
+							  row[j]=s;
+						   }
+						   ent.setTitle(row[0].toString());
+						   ent.setDesc(row[1].toString());
+						   ent.setDate(row[2].toString());
+						   tdo.add(ent);
+					     }
+					   try {
+						LocalDb aftrDlt=new LocalDb(tdo);
+					} catch (ClassNotFoundException | IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					   JOptionPane.showMessageDialog( frame, "Successully Deleted!","Done", JOptionPane.INFORMATION_MESSAGE, null);
+						titlef.setText("");
+						descf.setText("");
+				}else {
+					JOptionPane.showMessageDialog( frame, "Which data you want to delete?!","???", JOptionPane.WARNING_MESSAGE, null);
 				}
+				
 				   
 			}
 		});
@@ -173,6 +192,51 @@ public class TodoUI {
 		frame.getContentPane().add(btnNewButton_2);
 		
 		JButton btnNewButton_2_1 = new JButton("Edit");
+
+		btnNewButton_2_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int edt =table.getSelectedRow();
+				if(table.isRowSelected(edt)) {
+					if(cnfrm==false) {
+						titlef.setText(model.getValueAt(edt, 0).toString());
+						descf.setText(model.getValueAt(edt, 1).toString());
+						cnfrm=true;
+						btnNewButton_2_1.setText("Confirm Edit");
+						btnNewButton_2_1.setBackground(Color.GREEN);
+					}else {
+						JOptionPane.showMessageDialog( frame, "Successully Edited!","Done", JOptionPane.INFORMATION_MESSAGE, null);
+						btnNewButton_2_1.setBackground(null);
+						btnNewButton_2_1.setText("Edit");
+						List<Todo>tdo=new ArrayList<Todo>();
+						model.setValueAt(titlef.getText(), edt, 0);
+						model.setValueAt(descf.getText(), edt, 1);
+						for (int i = 0; i < table.getRowCount(); i++) {  // Loop through the rows
+							Todo ent=new Todo();
+							for (int j = 0; j < table.getColumnCount(); j++) {
+								String s=model.getValueAt(i, j).toString();
+								row[j]=s;
+							}
+							ent.setTitle(row[0].toString());
+							ent.setDesc(row[1].toString());
+							ent.setDate(row[2].toString());
+							tdo.add(ent);
+						}
+						try {
+							LocalDb aftrDlt=new LocalDb(tdo);
+						} catch (ClassNotFoundException | IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						cnfrm=false;
+						titlef.setText("");
+						descf.setText("");
+					}
+				}else {
+					JOptionPane.showMessageDialog( frame, "Which data you want to edit?!","???", JOptionPane.WARNING_MESSAGE, null);
+				}
+				
+			}
+		});
 		btnNewButton_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton_2_1.setBounds(326, 493, 113, 43);
 		frame.getContentPane().add(btnNewButton_2_1);

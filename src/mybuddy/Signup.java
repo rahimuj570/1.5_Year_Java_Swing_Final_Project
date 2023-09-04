@@ -121,7 +121,7 @@ public class Signup {
 				else if(p.matcher((CharSequence) email.getText()).matches()==false)JOptionPane.showMessageDialog( btnSignup, "Enter a valid email","Invalid", JOptionPane.WARNING_MESSAGE, null);
 				else if(availEmail==false)JOptionPane.showMessageDialog( btnSignup, "Enter already registered!","Email Exist", JOptionPane.WARNING_MESSAGE, null);
 				else if(!password.getText().equals(repassword.getText()))
-				JOptionPane.showMessageDialog( btnSignup, "Password is not matched","Invalid", JOptionPane.WARNING_MESSAGE, null);
+				JOptionPane.showMessageDialog( frame, "Password is not matched","Invalid", JOptionPane.WARNING_MESSAGE, null);
 				else {
 					 Users u=new Users(name.getText(), email.getText(), password.getText());
 					try {
@@ -133,7 +133,7 @@ public class Signup {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					JOptionPane.showMessageDialog( btnSignup, "Successully Registered","Congratulations!", JOptionPane.INFORMATION_MESSAGE, null);
+					JOptionPane.showMessageDialog( frame, "Successully Registered","Congratulations!", JOptionPane.INFORMATION_MESSAGE, null);
 					Login window = new Login();
 					window.frame.setVisible(true);
 					frame.dispose();
